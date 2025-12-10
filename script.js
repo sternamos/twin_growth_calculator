@@ -149,7 +149,18 @@ function createChart() {
                 }
             },
             plugins: {
-                legend: { position: 'top' },
+                legend: { 
+                    position: 'top',
+                    // --- FIX START: Filter the legend ---
+                    labels: {
+                        filter: function(item, chart) {
+                            // Only show items in legend if they contain "percentile"
+                            // This hides "Twin 1" and "Twin 2" from the top box
+                            return item.text.includes('percentile');
+                        }
+                    }
+                    // --- FIX END ---
+                },
                 tooltip: {
                     callbacks: {
                         label: function(context) {
@@ -164,6 +175,9 @@ function createChart() {
             }
         }
     });
+
+    // Save the count of background curves so updateChart knows where to slice
+    growthChart._curveCount = percentileDatasets.length;
 }
 
 function getColor(index) {
@@ -400,69 +414,73 @@ function updateChart() {
     const measurements = [];
     const rows = document.querySelectorAll('.input-row');
 
+    // Build measurement list
     rows.forEach(row => {
         const twinId = parseInt(row.dataset.twin);
 
         const weeks = parseFloat(row.querySelector('.gestationalAgeWeeks').value);
-        const days  = parseFloat(row.querySelector('.gestationalAgeDays').value || '0');
+        const days  = parseFloat(row.querySelector('.gestationalAgeDays').value);
         const efw   = parseFloat(row.querySelector('.efw').value);
 
-        if (!weeks || !efw || efw <= 0) return;
-        if (weeks < 14 || weeks > 41) return;
+        // Skip incomplete rows
+        if (isNaN(weeks) || weeks < 14 || weeks > 41) return;
+        if (isNaN(efw) || efw <= 0) return;
 
-        const ga = weeks + days / 7;
-        const efwPct = calculateEFWPercentile(ga, efw);
+        const ga = weeks + (isNaN(days) ? 0 : days / 7);
 
         measurements.push({
             twin: twinId,
             gestationalAge: ga,
-            efw,
-            efwPercentile: efwPct
+            efw
         });
     });
 
-    // Remove old twin datasets
-    growthChart.data.datasets = growthChart.data.datasets.filter(
-        ds => ds.label !== 'Twin 1' && ds.label !== 'Twin 2'
-    );
+    // KEEP ONLY PERCENTILE CURVES (first N datasets)
+    const N = growthChart._curveCount; 
+    if (N && growthChart.data.datasets.length > N) {
+       growthChart.data.datasets = growthChart.data.datasets.slice(0, N);
+    }
 
-    // Add dataset for Twin 1
+    // Add Twin 1
     const twin1 = measurements.filter(m => m.twin === 1);
     if (twin1.length > 0) {
         growthChart.data.datasets.push({
             type: 'scatter',
-            label: 'Twin 1',
-            data: twin1.map(m => ({ x: m.gestationalAge, y: m.efw })),
+            label: 'Twin 1',  // Updated: Set name for Tooltip
+            data: twin1.map(m => ({
+                x: m.gestationalAge,
+                y: m.efw
+            })),
             pointRadius: 6,
             pointBackgroundColor: '#e53935',
             pointBorderColor: '#000',
             pointBorderWidth: 1,
-            showLine: false,
             order: -1,
-            hideInLegend: true
+            showLine: false
         });
     }
 
-    // Add dataset for Twin 2
+    // Add Twin 2
     const twin2 = measurements.filter(m => m.twin === 2);
     if (twin2.length > 0) {
         growthChart.data.datasets.push({
             type: 'scatter',
-            label: 'Twin 2',
-            data: twin2.map(m => ({ x: m.gestationalAge, y: m.efw })),
+            label: 'Twin 2',  // Updated: Set name for Tooltip
+            data: twin2.map(m => ({
+                x: m.gestationalAge,
+                y: m.efw
+            })),
             pointRadius: 6,
             pointBackgroundColor: '#43a047',
             pointBorderColor: '#000',
             pointBorderWidth: 1,
-            showLine: false,
             order: -1,
-            hideInLegend: true
+            showLine: false
         });
     }
 
-    growthChart.update();
+    growthChart.update('none'); // no jitter, no reanimation
 }
-
 
 // =================== DOM INIT ===================
 
