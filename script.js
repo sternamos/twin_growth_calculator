@@ -122,7 +122,8 @@ function createChart() {
             borderColor: getColor(displayIdx),
             borderWidth: 2,
             pointRadius: 0,
-            fill: false
+            fill: false,
+            order: 1
         });
     });
 
@@ -180,7 +181,6 @@ function attachInputHandlers() {
 
             let shouldUpdateChart = false;
 
-            // Only these classes move the icon → allow chart update
             if (
                 input.classList.contains('efw') ||
                 input.classList.contains('gestationalAgeWeeks') ||
@@ -189,7 +189,6 @@ function attachInputHandlers() {
                 shouldUpdateChart = true;
             }
 
-            // AC should NEVER cause chart update
             updateResults(shouldUpdateChart);
         });
 
@@ -434,8 +433,8 @@ function updateChart() {
                 y: m.efw,
                 twin: m.twin
             })),
-            pointRadius: 7,
-            pointHoverRadius: 9,
+            pointRadius: 5,
+            pointHoverRadius: 7,
             pointStyle: 'circle',
             pointBackgroundColor: measurements.map(m =>
                 m.twin === 1 ? '#e53935' : '#43a047'
@@ -443,6 +442,7 @@ function updateChart() {
             pointBorderColor: '#000',
             pointBorderWidth: 1,
             showLine: false,
+            order: -1,
             datalabels: { display: false }
         });
     }
