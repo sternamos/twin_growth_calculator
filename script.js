@@ -120,6 +120,7 @@ function createChart() {
             label: `${p}th percentile`,
             data,
             borderColor: getColor(displayIdx),
+            backgroundColor: getColor(displayIdx),
             borderWidth: 2,
             pointRadius: 0,
             fill: false,
@@ -181,7 +182,8 @@ function createChart() {
 }
 
 function getColor(index) {
-    const colors = ['#d32f2f', '#1976d2', '#388e3c', '#f57c00', '#7b1fa2'];
+    const colors = ['#1976d2', '#fb8c00', '#8e24aa', '#00acc1', '#546e7a'];
+
     return colors[index % colors.length];
 }
 
