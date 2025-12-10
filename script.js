@@ -241,6 +241,9 @@ function enforceWeeksLimit(event) {
 function updateResults() {
     const rows = document.querySelectorAll('.input-row');
 
+    let efwTwin1 = null;
+    let efwTwin2 = null;
+
     rows.forEach(row => {
         const weeksVal = row.querySelector('.gestationalAgeWeeks').value;
         const daysVal = row.querySelector('.gestationalAgeDays').value;
@@ -257,7 +260,14 @@ function updateResults() {
         const efwResultEl = row.querySelector('.efw-result');
         const acResultEl = row.querySelector('.ac-result');
 
-        // EFW percentile (from EFW table)
+        // Store EFW per twin (for discordancy)
+        const twinId = parseInt(row.dataset.twin);
+        if (efw > 0) {
+            if (twinId === 1) efwTwin1 = efw;
+            if (twinId === 2) efwTwin2 = efw;
+        }
+
+        // EFW percentile (from table)
         if (efw > 0 && totalGA > 0) {
             const efwPct = calculateEFWPercentile(totalGA, efw);
             efwResultEl.value = isNaN(efwPct) ? '' : `${efwPct.toFixed(1)}%`;
@@ -265,7 +275,7 @@ function updateResults() {
             efwResultEl.value = '';
         }
 
-        // AC percentile (from AC table)
+        // AC percentile (from table)
         if (ac > 0 && totalGA > 0) {
             const acPct = calculateACPercentile(totalGA, ac);
             acResultEl.value = isNaN(acPct) ? '' : `${acPct.toFixed(1)}%`;
@@ -273,6 +283,20 @@ function updateResults() {
             acResultEl.value = '';
         }
     });
+
+    // ---- Discordancy calculation ----
+    const discordancyEl = document.getElementById('discordancyValue');
+    if (discordancyEl) {
+        if (efwTwin1 != null && efwTwin2 != null && efwTwin1 > 0 && efwTwin2 > 0) {
+            const diff = Math.abs(efwTwin1 - efwTwin2);
+            const maxEfw = Math.max(efwTwin1, efwTwin2);
+            const discordancy = (diff / maxEfw) * 100;  // as %
+            discordancyEl.value = `${discordancy.toFixed(1)}%`;
+        } else {
+            // One or both EFWs missing → show empty box
+            discordancyEl.value = '';
+        }
+    }
 
     updateChart();
 }
