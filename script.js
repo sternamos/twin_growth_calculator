@@ -438,7 +438,8 @@ function updateChart() {
             pointBorderColor: '#000',
             pointBorderWidth: 1,
             showLine: false,
-            order: -1
+            order: -1,
+            hideInLegend: true
         });
     }
 
@@ -454,7 +455,8 @@ function updateChart() {
             pointBorderColor: '#000',
             pointBorderWidth: 1,
             showLine: false,
-            order: -1
+            order: -1,
+            hideInLegend: true
         });
     }
 
