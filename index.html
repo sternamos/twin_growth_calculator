@@ -1,0 +1,133 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Twin Growth Calculator</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <link rel="stylesheet" href="style.css">
+
+    <!-- Chart.js -->
+    <script src="https://cdn.jsdelivr.net/npm/chart.js@4"></script>
+    <!-- Chart.js Data Labels plugin -->
+    <script src="https://cdn.jsdelivr.net/npm/chartjs-plugin-datalabels@2"></script>
+</head>
+<body>
+
+    <header>
+        <h1>Twin Growth Calculator</h1>
+    </header>
+
+    <main>
+        <form id="twinForm" onsubmit="event.preventDefault();">
+            <div id="inputContainer">
+
+                <!-- Twin 1 -->
+                <div class="input-row" data-twin="1">
+                    <div class="input-group twin-label">
+                        <span class="twin-dot twin1-dot"></span>
+                        <label>Twin 1</label>
+                    </div>
+
+                    <div class="input-group">
+                        <label>Gestational Age</label>
+                        <div class="gestational-age-group">
+                            <div class="gestational-age-input">
+                                <input type="number" class="gestationalAgeWeeks" min="14" max="42" placeholder="Weeks">
+                            </div>
+                            <span class="plus-sign">+</span>
+                            <div class="gestational-age-input">
+                                <input type="number" class="gestationalAgeDays" min="0" max="6" placeholder="Days">
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="input-group">
+                        <label>EFW (g)</label>
+                        <div class="input-result-group">
+                            <input type="number" class="efw" placeholder="Estimated fetal weight">
+                            <input type="text" class="result efw-result" readonly placeholder="Percentile">
+                        </div>
+                    </div>
+
+                    <div class="input-group">
+                        <label>AC (mm)</label>
+                        <div class="input-result-group">
+                            <input type="number" class="ac" placeholder="Abdominal circumference">
+                            <input type="text" class="result ac-result" readonly placeholder="Percentile">
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Twin 2 -->
+                <div class="input-row" data-twin="2">
+                    <div class="input-group twin-label">
+                        <span class="twin-dot twin2-dot"></span>
+                        <label>Twin 2</label>
+                    </div>
+
+                    <div class="input-group">
+                        <label>Gestational Age</label>
+                        <div class="gestational-age-group">
+                            <div class="gestational-age-input">
+                                <input type="number" class="gestationalAgeWeeks" min="14" max="42" placeholder="Weeks">
+                            </div>
+                            <span class="plus-sign">+</span>
+                            <div class="gestational-age-input">
+                                <input type="number" class="gestationalAgeDays" min="0" max="6" placeholder="Days">
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="input-group">
+                        <label>EFW (g)</label>
+                        <div class="input-result-group">
+                            <input type="number" class="efw" placeholder="Estimated fetal weight">
+                            <input type="text" class="result efw-result" readonly placeholder="Percentile">
+                        </div>
+                    </div>
+
+                    <div class="input-group">
+                        <label>AC (mm)</label>
+                        <div class="input-result-group">
+                            <input type="number" class="ac" placeholder="Abdominal circumference">
+                            <input type="text" class="result ac-result" readonly placeholder="Percentile">
+                        </div>
+                    </div>
+                </div>
+
+            </div>
+
+            <div class="button-row">
+                <button type="button" id="recalcBtn">Recalculate</button>
+            </div>
+        </form>
+
+        <section id="chartSection">
+            <h2>EFW Growth Chart (Twins)</h2>
+            <div class="chart-container">
+                <canvas id="growthChart"></canvas>
+            </div>
+        </section>
+
+        <section id="disclaimer" class="disclaimer">
+            <h2>Disclaimer</h2>
+            <p>Information on this webpage is not intended to replace professional medical advice.</p>
+            <p>
+            </p>
+        </section>
+
+        <section id="references">
+            <h3>References</h3>
+            <ol>
+            </ol>
+        </section>
+    </main>
+
+    <footer id="footer">
+        <div id="attribution">Twin growth calculator - GitHub Pages deployment</div>
+    </footer>
+
+    <script src="script.js"></script>
+</body>
+</html>
