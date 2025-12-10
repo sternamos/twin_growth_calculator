@@ -133,6 +133,7 @@ function createChart() {
         type: 'line',
         data: { datasets: percentileDatasets },
         options: {
+            animation: false,
             responsive: true,
             maintainAspectRatio: false,
             scales: {
@@ -420,35 +421,46 @@ function updateChart() {
         });
     });
 
+    // Remove old twin datasets
     growthChart.data.datasets = growthChart.data.datasets.filter(
-        ds => ds.label !== 'Twins measurements'
+        ds => ds.label !== 'Twin 1' && ds.label !== 'Twin 2'
     );
 
-    if (measurements.length > 0) {
+    // Add dataset for Twin 1
+    const twin1 = measurements.filter(m => m.twin === 1);
+    if (twin1.length > 0) {
         growthChart.data.datasets.push({
             type: 'scatter',
-            label: 'Twins measurements',
-            data: measurements.map(m => ({
-                x: m.gestationalAge,
-                y: m.efw,
-                twin: m.twin
-            })),
-            pointRadius: 5,
-            pointHoverRadius: 7,
-            pointStyle: 'circle',
-            pointBackgroundColor: measurements.map(m =>
-                m.twin === 1 ? '#e53935' : '#43a047'
-            ),
+            label: 'Twin 1',
+            data: twin1.map(m => ({ x: m.gestationalAge, y: m.efw })),
+            pointRadius: 6,
+            pointBackgroundColor: '#e53935',
             pointBorderColor: '#000',
             pointBorderWidth: 1,
             showLine: false,
-            order: -1,
-            datalabels: { display: false }
+            order: -1
+        });
+    }
+
+    // Add dataset for Twin 2
+    const twin2 = measurements.filter(m => m.twin === 2);
+    if (twin2.length > 0) {
+        growthChart.data.datasets.push({
+            type: 'scatter',
+            label: 'Twin 2',
+            data: twin2.map(m => ({ x: m.gestationalAge, y: m.efw })),
+            pointRadius: 6,
+            pointBackgroundColor: '#43a047',
+            pointBorderColor: '#000',
+            pointBorderWidth: 1,
+            showLine: false,
+            order: -1
         });
     }
 
     growthChart.update();
 }
+
 
 // =================== DOM INIT ===================
 
