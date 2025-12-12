@@ -199,6 +199,7 @@ main {
 .input-result-group {
     display: flex;
     gap: 0.3rem;
+    align-items: center; /* Ensure alignment */
 }
 
 input[type="number"],
@@ -210,17 +211,21 @@ input[type="text"] {
     font-size: 0.9rem;
 }
 
-/* General Readonly Style (Applied to Percentiles & Discordancy) */
-input[type="text"][readonly] {
+/* Specific logic: Inputs inside Twin Cards */
+/* 1. The main input (Weight/AC) takes remaining space */
+.twin-card .input-result-group input:not([readonly]) {
+    flex: 1; 
+    min-width: 0; /* Prevents overflow */
+}
+
+/* 2. The readonly input (Percentile) has fixed width */
+.twin-card input[type="text"][readonly] {
     background: #f0f0f5;
     font-weight: 500;
     color: #222;
-}
-
-/* Specific logic: Percentile inputs inside Twin Cards */
-.twin-card input[type="text"][readonly] {
     text-align: center;
-    width: 35%; /* Restrict percentile width */
+    width: 40%; 
+    flex: 0 0 40%; /* Prevent shrinking */
 }
 
 /* -----------------------------------------
@@ -248,6 +253,10 @@ input[type="text"][readonly] {
 .discordancy-value {
     padding: 0.25rem 0.4rem;
     width: 100%;
+    /* Ensure it looks like the other read-only inputs */
+    background: #f0f0f5;
+    font-weight: 500;
+    color: #222;
 }
 
 /* ----------------------------------
@@ -283,7 +292,7 @@ footer {
 }
 
 /* ----------------------------------
-   RESPONSIVE (Merged & Fixed)
+   RESPONSIVE
 ---------------------------------- */
 @media (max-width: 700px) {
     main {
@@ -307,13 +316,12 @@ footer {
         flex-direction: column;
     }
 
-    /* THE FIX: Reset flex basis to auto so cards don't force height */
     .twin-card {
-        flex: 1 1 auto;
+        flex: 0 0 auto; 
+        width: 100%;
     }
 
     .chart-container {
         height: 330px;
     }
-
 }
