@@ -4,7 +4,7 @@ let twinEfwCurves = null;   // from data/twin_growth_EFW.csv
 let twinAcTable = {};       // from data/twin_growth_AC.csv
 let growthChart = null;
 
-// Percentiles to DISPLAY as curves (original look)
+// Percentiles to DISPLAY as curves
 const DISPLAYED_EFW_PERCENTILES = [3, 10, 50, 90, 97];
 
 // =================== DATA LOADING ===================
@@ -86,9 +86,7 @@ async function loadTwinAcTable() {
             }
 
             const val = parseFloat(parts[idx + 1]);
-            if (!isNaN(p) && !isNaN(val)) {
-                row[p] = val;
-            }
+            if (!isNaN(p) && !isNaN(val)) row[p] = val;
         });
 
         twinAcTable[ga] = row;
@@ -152,15 +150,9 @@ function createChart() {
             plugins: {
                 legend: { 
                     position: 'top',
-                    // --- FIX START: Filter the legend ---
                     labels: {
-                        filter: function(item, chart) {
-                            // Only show items in legend if they contain "percentile"
-                            // This hides "Twin 1" and "Twin 2" from the top box
-                            return item.text.includes('percentile');
-                        }
+                        filter: item => item.text.includes('percentile')
                     }
-                    // --- FIX END ---
                 },
                 tooltip: {
                     callbacks: {
@@ -177,139 +169,136 @@ function createChart() {
         }
     });
 
-    // Save the count of background curves so updateChart knows where to slice
     growthChart._curveCount = percentileDatasets.length;
 }
 
 function getColor(index) {
     const colors = ['#1976d2', '#fb8c00', '#8e24aa', '#00acc1', '#546e7a'];
-
     return colors[index % colors.length];
 }
 
-// =================== INPUT HANDLING (CHART UPDATE FIX) ===================
+// =================== INPUT HANDLING ===================
 
 function attachInputHandlers() {
-    const allInputs = document.querySelectorAll('#inputContainer input');
 
-    allInputs.forEach(input => {
+    const sharedGAInputs = document.querySelectorAll('#gestationalAgeWeeks, #gestationalAgeDays');
+
+    sharedGAInputs.forEach(input => {
+        input.addEventListener('input', () => {
+            updateResults(true);
+        });
+
+        input.addEventListener('change', event => {
+            const el = event.target;
+            if (el.id === 'gestationalAgeWeeks') enforceWeeksLimit(event);
+            if (el.id === 'gestationalAgeDays')  enforceDaysLimit(event);
+            updateResults(true);
+        });
+    });
+
+    // Existing handlers for twin EFW/AC
+    const twinInputs = document.querySelectorAll('#twinsContainer input'); // <--- Matches your HTML ID
+
+    twinInputs.forEach(input => {
 
         input.addEventListener('input', () => {
-
-            let shouldUpdateChart = false;
-
-            if (
-                input.classList.contains('efw') ||
-                input.classList.contains('gestationalAgeWeeks') ||
-                input.classList.contains('gestationalAgeDays')
-            ) {
-                shouldUpdateChart = true;
-            }
-
+            let shouldUpdateChart = input.classList.contains('efw');
             updateResults(shouldUpdateChart);
         });
 
-        input.addEventListener('change', (event) => {
-            const el = event.target;
-
-            if (el.classList.contains('gestationalAgeDays')) enforceDaysLimit(event);
-            if (el.classList.contains('gestationalAgeWeeks')) enforceWeeksLimit(event);
-
-            let shouldUpdateChart = false;
-
-            if (
-                el.classList.contains('efw') ||
-                el.classList.contains('gestationalAgeWeeks') ||
-                el.classList.contains('gestationalAgeDays')
-            ) {
-                shouldUpdateChart = true;
-            }
-
-            updateResults(shouldUpdateChart);
+        input.addEventListener('change', () => {
+            updateResults(input.classList.contains('efw'));
         });
     });
 }
 
+// ---- INPUT LIMITS ----
 function enforceDaysLimit(event) {
-    const input = event.target;
-    let val = parseInt(input.value);
+    let val = parseInt(event.target.value);
     if (isNaN(val)) return;
-    if (val < 0) val = 0;
-    if (val > 6) val = 6;
-    input.value = val;
+    event.target.value = Math.max(0, Math.min(6, val));
 }
 
 function enforceWeeksLimit(event) {
-    const input = event.target;
-    let val = parseInt(input.value);
+    let val = parseInt(event.target.value);
     if (isNaN(val)) return;
-    if (val < 14) val = 14;
-    if (val > 41) val = 41;
-    input.value = val;
+    event.target.value = Math.max(14, Math.min(41, val));
 }
 
 // =================== RESULTS + DISCORDANCY ===================
 
 function updateResults(shouldUpdateChart = true) {
-    const rows = document.querySelectorAll('.input-row');
+
+    // 1. Get Gestational Age
+    const weeks = parseFloat(document.getElementById('gestationalAgeWeeks').value || '0');
+    const days  = parseFloat(document.getElementById('gestationalAgeDays').value  || '0');
+    const totalGA = weeks + days / 7;
 
     let efwTwin1 = null;
     let efwTwin2 = null;
 
+    // 2. Select only the cards (containers)
+    const rows = document.querySelectorAll('.twin-card');
+
     rows.forEach(row => {
-        const weeks = parseFloat(row.querySelector('.gestationalAgeWeeks').value || '0');
-        const days = parseFloat(row.querySelector('.gestationalAgeDays').value || '0');
-        const efw = parseFloat(row.querySelector('.efw').value || '0');
-        const ac  = parseFloat(row.querySelector('.ac').value || '0');
-
-        const totalGA = weeks + days / 7;
-
+        // Select inputs specific to this twin card
+        const efwInput = row.querySelector('.efw');
+        const acInput = row.querySelector('.ac');
         const efwResultEl = row.querySelector('.efw-result');
         const acResultEl  = row.querySelector('.ac-result');
 
+        // Parse values (handle empty inputs safely)
+        const efw = efwInput && efwInput.value ? parseFloat(efwInput.value) : 0;
+        const ac  = acInput && acInput.value ? parseFloat(acInput.value) : 0;
+        
+        // Identify Twin ID (1 or 2) from the card's data attribute
         const twinId = parseInt(row.dataset.twin);
+
+        // Store values for Discordancy calculation later
         if (efw > 0) {
             if (twinId === 1) efwTwin1 = efw;
             if (twinId === 2) efwTwin2 = efw;
         }
 
-        // EFW percentile
-        if (efw > 0 && totalGA > 0) {
-            const efwPct = calculateEFWPercentile(totalGA, efw);
-            efwResultEl.value = isNaN(efwPct) ? '' : `${efwPct.toFixed(1)}%`;
-        } else {
-            efwResultEl.value = '';
+        // --- EFW Percentile Calculation ---
+        if (efwResultEl) {
+            if (efw > 0 && totalGA >= 14) {
+                const efwPct = calculateEFWPercentile(totalGA, efw);
+                efwResultEl.value = isNaN(efwPct) ? '' : `${efwPct.toFixed(1)}%`;
+            } else {
+                efwResultEl.value = '';
+            }
         }
 
-        // AC percentile
-        if (ac > 0 && totalGA > 0) {
-            const acPct = calculateACPercentile(totalGA, ac);
-            acResultEl.value = isNaN(acPct) ? '' : `${acPct.toFixed(1)}%`;
-        } else {
-            acResultEl.value = '';
+        // --- AC Percentile Calculation ---
+        if (acResultEl) {
+            if (ac > 0 && totalGA >= 14) {
+                const acPct = calculateACPercentile(totalGA, ac);
+                acResultEl.value = isNaN(acPct) ? '' : `${acPct.toFixed(1)}%`;
+            } else {
+                acResultEl.value = '';
+            }
         }
     });
 
-    // ---- Discordancy ----
+    // 3. Discordancy Calculation
     const discordancyEl = document.getElementById('discordancyValue');
     if (discordancyEl) {
-        if (efwTwin1 && efwTwin2) {
+        if (efwTwin1 > 0 && efwTwin2 > 0) {
             const diff = Math.abs(efwTwin1 - efwTwin2);
             const maxEfw = Math.max(efwTwin1, efwTwin2);
-            const discordancy = (diff / maxEfw) * 100;
-            discordancyEl.value = `${discordancy.toFixed(1)}%`;
+            discordancyEl.value = ((diff / maxEfw) * 100).toFixed(1) + '%';
         } else {
             discordancyEl.value = '';
         }
     }
 
-    // ---- Chart update ONLY when necessary ----
-    if (shouldUpdateChart) {
-        updateChart();
-    }
+    // 4. Update Chart
+    if (shouldUpdateChart) updateChart();
 }
 
-// =================== PERCENTILE CALCULATIONS (unchanged) ===================
+// =================== PERCENTILE CALCULATION HELPERS ===================
+// (unchanged code)
 
 function findNearestEfwWeekIndex(gestationalWeeks) {
     if (!twinEfwCurves) return -1;
@@ -376,7 +365,7 @@ function calculateACPercentile(gestationalWeeks, ac) {
     const values = percentiles.map(p => row[p]);
 
     if (ac <= values[0]) return percentiles[0];
-    if (ac >= values[values.length - 1]) return percentiles[percentiles.length - 1];
+    if (ac >= values[values.length - 1]) return percentiles[values.length - 1];
 
     for (let i = 0; i < percentiles.length - 1; i++) {
         const v1 = values[i];
@@ -413,75 +402,59 @@ function findNearestGA(table, ga) {
 function updateChart() {
     if (!growthChart) return;
 
-    const measurements = [];
-    const rows = document.querySelectorAll('.input-row');
+    const weeks = parseFloat(document.getElementById('gestationalAgeWeeks').value);
+    const days  = parseFloat(document.getElementById('gestationalAgeDays').value);
+    const gestationalAge = weeks + (isNaN(days) ? 0 : days / 7);
 
-    // Build measurement list
+    const measurements = [];
+    const rows = document.querySelectorAll('.twin-card');
+
     rows.forEach(row => {
         const twinId = parseInt(row.dataset.twin);
+        const efw = parseFloat(row.querySelector('.efw').value);
 
-        const weeks = parseFloat(row.querySelector('.gestationalAgeWeeks').value);
-        const days  = parseFloat(row.querySelector('.gestationalAgeDays').value);
-        const efw   = parseFloat(row.querySelector('.efw').value);
-
-        // Skip incomplete rows
-        if (isNaN(weeks) || weeks < 14 || weeks > 41) return;
         if (isNaN(efw) || efw <= 0) return;
-
-        const ga = weeks + (isNaN(days) ? 0 : days / 7);
+        if (isNaN(gestationalAge) || gestationalAge < 14 || gestationalAge > 41) return;
 
         measurements.push({
             twin: twinId,
-            gestationalAge: ga,
+            gestationalAge,
             efw
         });
     });
 
-    // KEEP ONLY PERCENTILE CURVES (first N datasets)
-    const N = growthChart._curveCount; 
-    if (N && growthChart.data.datasets.length > N) {
-       growthChart.data.datasets = growthChart.data.datasets.slice(0, N);
-    }
+    const N = growthChart._curveCount;
+    growthChart.data.datasets = growthChart.data.datasets.slice(0, N);
 
-    // Add Twin 1
     const twin1 = measurements.filter(m => m.twin === 1);
     if (twin1.length > 0) {
         growthChart.data.datasets.push({
             type: 'scatter',
-            label: 'Twin 1',  // Updated: Set name for Tooltip
-            data: twin1.map(m => ({
-                x: m.gestationalAge,
-                y: m.efw
-            })),
+            label: 'Twin 1',
+            data: twin1.map(m => ({ x: m.gestationalAge, y: m.efw })),
             pointRadius: 6,
             pointBackgroundColor: '#e53935',
             pointBorderColor: '#000',
             pointBorderWidth: 1,
-            order: -1,
-            showLine: false
+            order: -1
         });
     }
 
-    // Add Twin 2
     const twin2 = measurements.filter(m => m.twin === 2);
     if (twin2.length > 0) {
         growthChart.data.datasets.push({
             type: 'scatter',
-            label: 'Twin 2',  // Updated: Set name for Tooltip
-            data: twin2.map(m => ({
-                x: m.gestationalAge,
-                y: m.efw
-            })),
+            label: 'Twin 2',
+            data: twin2.map(m => ({ x: m.gestationalAge, y: m.efw })),
             pointRadius: 6,
             pointBackgroundColor: '#43a047',
             pointBorderColor: '#000',
             pointBorderWidth: 1,
-            order: -1,
-            showLine: false
+            order: -1
         });
     }
 
-    growthChart.update('none'); // no jitter, no reanimation
+    growthChart.update('none');
 }
 
 // =================== DOM INIT ===================
