@@ -17,12 +17,21 @@ header {
     background: #283593;
     color: white;
     padding: 1rem 1.5rem;
+
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 3rem;
+
     text-align: center;
+    flex-wrap: wrap;  
 }
 
-header h1 {
-    margin: 0.2rem 0;
+.org-logo {
+    height: 80px;          
+    width: auto;
 }
+
 
 /* ----------------------------------
    MAIN LAYOUT
@@ -205,6 +214,19 @@ footer {
 
     main {
         padding: 1rem;
+    }
+
+    header {
+        flex-direction: column;  /* stack logo and title vertically */
+        gap: 0.5rem;
+    }
+
+    .org-logo {
+        height: 45px;            /* smaller logo on mobile */
+    }
+
+    header h1 {
+        font-size: 1.3rem;       /* adjust title size for small screens */
     }
 
     #inputContainer {
