@@ -59,10 +59,10 @@ main {
     position: relative;
     border-left: 5px solid #283593;
     margin-bottom: 1rem;
-    padding: 0.8rem 0.8rem 0.5rem 0.8rem; /* Tighter padding */
+    padding: 0.8rem 0.8rem 0.5rem 0.8rem;
     display: flex;
     flex-direction: column;
-    gap: 0.25rem; /* VERY small gap between GA, Twins, Discordancy */
+    gap: 0.25rem;
 }
 
 /* Remove button - Top Right */
@@ -143,20 +143,20 @@ main {
 ---------------------------------- */
 .twins-container {
     display: flex;
-    gap: 0.5rem; /* Small horizontal gap */
+    gap: 0.5rem; 
     flex-wrap: wrap;
     margin: 0;
 }
 
 .twin-card {
-    flex: 1 1 200px; /* Allow cards to shrink */
+    flex: 1 1 200px; 
     background: #fcfcfc;
     border-radius: 6px;
-    padding: 0.5rem; /* Very compact inner padding */
+    padding: 0.5rem; 
     border: 1px solid #e0e0e0;
 }
 
-/* Make sure the last input in the card doesn't push down */
+/* Remove bottom margin from last element to fix gap issue */
 .twin-card > :last-child {
     margin-bottom: 0;
 }
@@ -187,7 +187,7 @@ main {
    COMPACT INPUTS inside cards
 ---------------------------------- */
 .compact-input {
-    margin-bottom: 0.3rem; /* Tiny space between EFW and AC */
+    margin-bottom: 0.3rem;
 }
 
 .compact-input label {
@@ -199,23 +199,22 @@ main {
 .input-result-group {
     display: flex;
     gap: 0.3rem;
-    align-items: center; /* Ensure alignment */
+    align-items: center;
 }
 
 input[type="number"],
 input[type="text"] {
     width: 100%;
-    padding: 0.25rem 0.4rem; /* Compact padding */
+    padding: 0.25rem 0.4rem;
     border-radius: 4px;
     border: 1px solid #ccc;
     font-size: 0.9rem;
 }
 
-/* Specific logic: Inputs inside Twin Cards */
-/* 1. The main input (Weight/AC) takes remaining space */
+/* 1. The main input takes remaining space */
 .twin-card .input-result-group input:not([readonly]) {
     flex: 1; 
-    min-width: 0; /* Prevents overflow */
+    min-width: 0;
 }
 
 /* 2. The readonly input (Percentile) has fixed width */
@@ -225,7 +224,7 @@ input[type="text"] {
     color: #222;
     text-align: center;
     width: 40%; 
-    flex: 0 0 40%; /* Prevent shrinking */
+    flex: 0 0 40%;
 }
 
 /* -----------------------------------------
@@ -235,7 +234,7 @@ input[type="text"] {
     display: flex;
     align-items: center;
     gap: 0.5rem;
-    margin-top: 0; /* Zero margin from twins */
+    margin-top: 0;
     padding-top: 0.1rem;
 }
 
@@ -247,13 +246,12 @@ input[type="text"] {
 }
 
 .discordancy-result-group {
-    width: 65px; /* Slightly wider to show the result clearly */
+    width: 70px; /* Small but enough for "15.3%" */
 }
 
 .discordancy-value {
     padding: 0.25rem 0.4rem;
     width: 100%;
-    /* Ensure it looks like the other read-only inputs */
     background: #f0f0f5;
     font-weight: 500;
     color: #222;
@@ -292,11 +290,16 @@ footer {
 }
 
 /* ----------------------------------
-   RESPONSIVE
+   RESPONSIVE MOBILE TWEAKS
 ---------------------------------- */
 @media (max-width: 700px) {
+    /* Reduce padding to gain horizontal space for text */
     main {
-        padding: 1rem;
+        padding: 0.5rem; 
+    }
+    
+    .unified-input-container {
+        padding: 0.7rem; 
     }
 
     header {
@@ -316,9 +319,22 @@ footer {
         flex-direction: column;
     }
 
+    /* Fix gap bug: stop flex-basis from forcing height */
     .twin-card {
         flex: 0 0 auto; 
         width: 100%;
+    }
+
+    /* Give Percentile box slightly more width on mobile to fit text */
+    .twin-card input[type="text"][readonly] {
+        width: 45%;
+        flex: 0 0 45%;
+    }
+    
+    /* Slightly smaller font on mobile to ensure "Percentile" fits */
+    input[type="number"],
+    input[type="text"] {
+        font-size: 0.85rem;
     }
 
     .chart-container {
