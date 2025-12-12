@@ -11,28 +11,39 @@ body {
 }
 
 /* ----------------------------------
-   HEADER
+   HEADER 
 ---------------------------------- */
 header {
-    background: #283593;
-    color: white;
-    padding: 0.8rem 1rem;
+    background: #ffffff;
+    color: #283593; /* Dark Blue text */
+    
     display: flex;
+    flex-direction: row; 
     align-items: center;
-    justify-content: center;
+    justify-content: flex-start;
+    padding: 0.5rem 1.5rem; /* Reduced vertical padding slightly since logo is bigger */
     gap: 1.5rem;
-    text-align: center;
-    flex-wrap: wrap;  
+    
+    /* Professional bottom border */
+    border-bottom: 3px solid #283593; 
+    box-shadow: 0 2px 10px rgba(0,0,0,0.05);
+    position: relative;
+    z-index: 10;
 }
 
 .org-logo {
-    height: 60px;          
+    /* Increased size for better legibility */
+    height: 70px; 
     width: auto;
+    flex-shrink: 0; 
 }
 
 header h1 {
-    font-size: 1.5rem;
+    font-size: 1.8rem; /* Slightly larger title to match logo scale */
     margin: 0;
+    font-weight: 700;
+    letter-spacing: 0.5px;
+    line-height: 1.2;
 }
 
 /* ----------------------------------
@@ -246,7 +257,7 @@ input[type="text"] {
 }
 
 .discordancy-result-group {
-    width: 70px; /* Small but enough for "15.3%" */
+    width: 70px;
 }
 
 .discordancy-value {
@@ -292,8 +303,7 @@ footer {
 /* ----------------------------------
    RESPONSIVE MOBILE TWEAKS
 ---------------------------------- */
-@media (max-width: 700px) {
-    /* Reduce padding to gain horizontal space for text */
+@media (max-width: 600px) {
     main {
         padding: 0.5rem; 
     }
@@ -302,36 +312,38 @@ footer {
         padding: 0.7rem; 
     }
 
+    /* HEADER: Stack Vertical on Mobile */
     header {
-        flex-direction: column;
+        flex-direction: column; 
+        justify-content: center;
+        text-align: center;
         gap: 0.5rem;
+        padding: 1rem;
     }
 
     .org-logo {
-        height: 45px;
+        /* Larger mobile logo so text is readable */
+        height: 65px; 
     }
 
     header h1 {
-        font-size: 1.3rem;
+        font-size: 1.4rem;
     }
 
     .twins-container {
         flex-direction: column;
     }
 
-    /* Fix gap bug: stop flex-basis from forcing height */
     .twin-card {
         flex: 0 0 auto; 
         width: 100%;
     }
 
-    /* Give Percentile box slightly more width on mobile to fit text */
     .twin-card input[type="text"][readonly] {
         width: 45%;
         flex: 0 0 45%;
     }
     
-    /* Slightly smaller font on mobile to ensure "Percentile" fits */
     input[type="number"],
     input[type="text"] {
         font-size: 0.85rem;
