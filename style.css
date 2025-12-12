@@ -16,26 +16,31 @@ body {
 header {
     background: #283593;
     color: white;
-    padding: 1rem 1.5rem;
+    padding: 0.8rem 1rem;
     display: flex;
     align-items: center;
     justify-content: center;
-    gap: 3rem;
+    gap: 1.5rem;
     text-align: center;
     flex-wrap: wrap;  
 }
 
 .org-logo {
-    height: 80px;          
+    height: 60px;          
     width: auto;
+}
+
+header h1 {
+    font-size: 1.5rem;
+    margin: 0;
 }
 
 /* ----------------------------------
    MAIN LAYOUT
 ---------------------------------- */
 main {
-    padding: 1.5rem;
-    max-width: 900px;
+    padding: 1rem;
+    max-width: 800px;
     margin: 0 auto;
 }
 
@@ -44,53 +49,42 @@ main {
     padding: 1rem;
     border-radius: 10px;
     box-shadow: 0 2px 6px rgba(0,0,0,0.05);
-    display: flex;
-    flex-direction: column;
-    gap: 1.3rem;
 }
 
 /* ----------------------------------
-   MEASUREMENT BLOCKS
+   MEASUREMENT BLOCKS (Compact)
 ---------------------------------- */
 
 .measurement-block {
     position: relative;
     border-left: 5px solid #283593;
-    margin-bottom: 2rem;
-    transition: all 0.3s ease;
-}
-
-.block-header {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    border-bottom: 1px solid #eee;
-    padding-bottom: 0.5rem;
     margin-bottom: 1rem;
+    padding: 0.8rem 0.8rem 0.5rem 0.8rem; /* Tighter padding */
+    display: flex;
+    flex-direction: column;
+    gap: 0.25rem; /* VERY small gap between GA, Twins, Discordancy */
 }
 
-.block-header h3 {
-    margin: 0;
-    font-size: 1.1rem;
-    color: #444;
-}
-
-/* Remove button */
+/* Remove button - Top Right */
 .btn-remove {
+    position: absolute;
+    top: 2px;
+    right: 5px;
     background: transparent;
     border: none;
-    color: #999;
-    font-size: 1.5rem;
+    color: #ccc;
+    font-size: 1.8rem;
     cursor: pointer;
     line-height: 1;
-    padding: 0 0.5rem;
+    padding: 0;
+    z-index: 10;
 }
 
 .btn-remove:hover {
     color: #d32f2f;
 }
 
-/* Add Button Container */
+/* Add Button */
 .controls-container {
     display: flex;
     justify-content: center;
@@ -102,8 +96,8 @@ main {
     color: white;
     border: none;
     border-radius: 25px;
-    padding: 0.8rem 2rem;
-    font-size: 1rem;
+    padding: 0.6rem 1.5rem;
+    font-size: 0.95rem;
     font-weight: 600;
     cursor: pointer;
     box-shadow: 0 2px 5px rgba(0,0,0,0.2);
@@ -114,72 +108,18 @@ main {
     background-color: #1a237e;
 }
 
-
 /* ----------------------------------
-   TWIN CARDS
+   GA INPUTS
 ---------------------------------- */
-.twins-container {
-    display: flex;
-    gap: 1rem;
-    flex-wrap: wrap;
-}
-
-.twin-card {
-    flex: 1 1 300px;
-    background: #fff;
-    border-radius: 8px;
-    padding: 1rem;
-    border: 1px solid #f0f0f0;
-}
-
-.input-row {
-    flex: 1 1 320px;
-    min-width: 280px;
-    /* Default styling for standalone input rows */
-    background: white;
-    border-radius: 8px;
-    padding: 1rem;
-    box-shadow: 0 2px 6px rgba(0, 0, 0, 0.05);
-}
-
-.twin-label {
-    display: flex;
-    align-items: center;
-    gap: 0.5rem;
-    margin-bottom: 0.8rem;
-}
-
-.twin-label label {
-    font-weight: 600;
-    font-size: 1.15rem;
-}
-
-.twin-dot {
-    width: 12px;
-    height: 12px;
-    border-radius: 50%;
-    display: inline-block;
-}
-
-.twin1-dot {
-    background: #e53935;
-}
-
-.twin2-dot {
-    background: #43a047;
-}
-
-/* ----------------------------------
-   INPUT ELEMENTS
----------------------------------- */
-.input-group {
-    margin-bottom: 0.9rem;
-}
-
-label {
-    display: block;
-    font-size: 0.9rem;
+.ga-wrapper {
     margin-bottom: 0.25rem;
+    padding-right: 2rem; /* Avoid overlap with X button */
+}
+
+.ga-wrapper label {
+    font-size: 0.8rem;
+    color: #555;
+    margin-bottom: 0.1rem;
 }
 
 .gestational-age-group {
@@ -190,143 +130,154 @@ label {
 
 .gestational-age-input {
     flex: 1;
+    max-width: 100px;
 }
 
 .plus-sign {
     font-weight: bold;
-    color: #555;
-    font-size: 1.1rem;
+    color: #888;
+}
+
+/* ----------------------------------
+   TWIN CARDS
+---------------------------------- */
+.twins-container {
+    display: flex;
+    gap: 0.5rem; /* Small horizontal gap */
+    flex-wrap: wrap;
+    margin: 0;
+}
+
+.twin-card {
+    flex: 1 1 200px; /* Allow cards to shrink */
+    background: #fcfcfc;
+    border-radius: 6px;
+    padding: 0.5rem; /* Very compact inner padding */
+    border: 1px solid #e0e0e0;
+}
+
+.twin-label {
+    display: flex;
+    align-items: center;
+    gap: 0.4rem;
+    margin-bottom: 0.3rem;
+}
+
+.twin-label label {
+    font-weight: 700;
+    font-size: 0.95rem;
+}
+
+.twin-dot {
+    width: 8px;
+    height: 8px;
+    border-radius: 50%;
+    display: inline-block;
+}
+
+.twin1-dot { background: #e53935; }
+.twin2-dot { background: #43a047; }
+
+/* ----------------------------------
+   COMPACT INPUTS inside cards
+---------------------------------- */
+.compact-input {
+    margin-bottom: 0.3rem; /* Tiny space between EFW and AC */
+}
+
+.compact-input label {
+    font-size: 0.75rem;
+    color: #666;
+    margin-bottom: 0;
+}
+
+.input-result-group {
+    display: flex;
+    gap: 0.3rem;
 }
 
 input[type="number"],
 input[type="text"] {
     width: 100%;
-    padding: 0.45rem 0.55rem;
+    padding: 0.25rem 0.4rem; /* Compact padding */
     border-radius: 4px;
     border: 1px solid #ccc;
-    font-size: 0.95rem;
+    font-size: 0.9rem;
 }
 
+/* General Readonly Style (Applied to Percentiles & Discordancy) */
 input[type="text"][readonly] {
     background: #f0f0f5;
     font-weight: 500;
+    color: #222;
 }
 
-.input-result-group {
-    display: grid;
-    grid-template-columns: 1fr 1fr;
-    gap: 0.4rem;
+/* Specific logic: Percentile inputs inside Twin Cards */
+.twin-card input[type="text"][readonly] {
+    text-align: center;
+    width: 35%; /* Restrict percentile width */
 }
 
 /* -----------------------------------------
-Discordancy row
+   DISCORDANCY ROW (Compact)
 ----------------------------------------- */
 .discordancy-container {
-    margin: 0.5rem 0 0;
     display: flex;
     align-items: center;
     gap: 0.5rem;
+    margin-top: 0; /* Zero margin from twins */
+    padding-top: 0.1rem;
 }
 
 .discordancy-container label {
     font-weight: 600;
-    font-size: 0.95rem;
-    margin-bottom: 0;
+    font-size: 0.85rem;
+    margin: 0;
+    color: #333;
 }
 
 .discordancy-result-group {
-    max-width: 140px;
-    width: 100%;
+    width: 140px; /* Slightly wider to show the result clearly */
 }
 
 .discordancy-value {
+    padding: 0.25rem 0.4rem;
     width: 100%;
 }
 
 /* ----------------------------------
-   CHART
+   CHART & FOOTER
 ---------------------------------- */
-#chartSection {
-    margin-top: 1.5rem;
-}
-
+#chartSection { margin-top: 2rem; }
 .chart-container {
     position: relative;
     width: 100%;
-    height: 420px;
+    height: 380px;
     background: white;
     border-radius: 8px;
-    padding: 0.75rem;
+    padding: 0.5rem;
     box-shadow: 0 2px 6px rgba(0, 0, 0, 0.05);
 }
 
-/* ----------------------------------
-   DISCLAIMER + FOOTER
----------------------------------- */
 .disclaimer {
     margin-top: 1.5rem;
     background: #fff3e0;
     border-left: 4px solid #ff9800;
-    padding: 1rem;
+    padding: 0.8rem;
     border-radius: 4px;
-    font-size: 0.9rem;
-}
-
-#references {
-    margin-top: 1.5rem;
-    font-size: 0.9rem;
+    font-size: 0.85rem;
 }
 
 footer {
     margin-top: 2rem;
-    padding: 0.8rem 1.5rem;
+    padding: 0.8rem;
     background: #eeeeff;
     font-size: 0.8rem;
     text-align: center;
     color: #444;
 }
 
-/* ----------------------------------
-   RESPONSIVE
----------------------------------- */
-@media (max-width: 700px) {
-    main { padding: 1rem; }
-    header { flex-direction: column; gap: 0.5rem; }
-    .org-logo { height: 45px; }
-    header h1 { font-size: 1.3rem; }
+@media (max-width: 600px) {
     .twins-container { flex-direction: column; }
-    .chart-container { height: 330px; }
-    .input-result-group { grid-template-columns: 1fr; }
-}
-
-/* ----------------------------------
-   SPACING OVERRIDES FOR BLOCKS
----------------------------------- */
-
-/* Reduce main gap to bring top and bottom closer */
-.measurement-block {
-    gap: 0.6rem !important; 
-}
-
-/* Move Gestational Age closer to Title */
-.measurement-block .block-header {
-    margin-bottom: 0.2rem;
-    padding-bottom: 0.4rem;
-}
-
-/* Remove extra padding around the input container to tighten layout */
-.measurement-block .input-row {
-    padding: 0;
-    background: transparent;
-    box-shadow: none;
-}
-
-/* Ensure Twins don't stick to GA immediately */
-.measurement-block .twins-container {
-    margin-top: 1rem;
-}
-
-/* Bring Discordancy closer to Twin inputs */
-.measurement-block .discordancy-container {
-    margin-top: 0;
+    .chart-container { height: 300px; }
 }

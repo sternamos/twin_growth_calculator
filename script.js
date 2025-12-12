@@ -451,10 +451,10 @@ function updateChart(allMeasurements) {
         .map(m => ({ x: m.gestationalAge, y: m.efw }))
         .sort((a, b) => a.x - b.x);
 
-    // Add Twin 1 Line
+    // Add Twin 1 Points (Scatter, no line)
     if (twin1Data.length > 0) {
         growthChart.data.datasets.push({
-            type: 'line',
+            type: 'scatter', 
             label: 'Twin 1',
             data: twin1Data,
             borderColor: '#e53935',
@@ -462,16 +462,15 @@ function updateChart(allMeasurements) {
             pointRadius: 6,
             pointBackgroundColor: '#e53935',
             pointBorderColor: '#fff',
-            fill: false,
-            tension: 0.1,
+            pointBorderWidth: 1,
             order: -1
         });
     }
 
-    // Add Twin 2 Line
+    // Add Twin 2 Points (Scatter, no line)
     if (twin2Data.length > 0) {
         growthChart.data.datasets.push({
-            type: 'line',
+            type: 'scatter', 
             label: 'Twin 2',
             data: twin2Data,
             borderColor: '#43a047',
@@ -479,8 +478,7 @@ function updateChart(allMeasurements) {
             pointRadius: 6,
             pointBackgroundColor: '#43a047',
             pointBorderColor: '#fff',
-            fill: false,
-            tension: 0.1,
+            pointBorderWidth: 1,
             order: -1
         });
     }

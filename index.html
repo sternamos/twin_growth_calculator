@@ -25,14 +25,12 @@
         <form id="twinForm" onsubmit="event.preventDefault();">
 
             <!-- Container for dynamic measurement blocks -->
-            <div id="measurementsList">
-                <!-- Blocks will be injected here via JavaScript -->
-            </div>
+            <div id="measurementsList"></div>
 
             <!-- Controls to Add new timeline points -->
             <div class="controls-container">
                 <button type="button" id="addMeasurementBtn" class="btn-add">
-                    + Add Measurement Point
+                    + Add Measurements
                 </button>
             </div>
 
@@ -70,93 +68,80 @@
         <div id="attribution">ISMFM Twin Growth Curves</div>
     </footer>
 
-    <!-- TEMPLATE: This is cloned to create new input blocks -->
+    <!-- TEMPLATE: Compact Structure -->
     <template id="measurementBlockTemplate">
         <div class="measurement-block unified-input-container">
             
-            <div class="block-header">
-                <h3>Measurement Point</h3>
-                <button type="button" class="btn-remove" title="Remove this measurement">&times;</button>
+            <!-- Close button (Absolute Top-Right) -->
+            <button type="button" class="btn-remove" title="Remove this measurement">&times;</button>
+
+            <!-- Gestational Age (Direct Child) -->
+            <div class="input-group ga-wrapper">
+                <label>Gestational Age</label>
+                <div class="gestational-age-group">
+                    <div class="gestational-age-input">
+                        <input type="number" class="ga-weeks" min="14" max="42" placeholder="Weeks">
+                    </div>
+                    <span class="plus-sign">+</span>
+                    <div class="gestational-age-input">
+                        <input type="number" class="ga-days" min="0" max="6" placeholder="Days">
+                    </div>
+                </div>
             </div>
 
-            <!-- Shared Gestational Age -->
-            <div class="input-row">
-                <div class="input-group">
-                    <label>Gestational Age</label>
-                    <div class="gestational-age-group">
-                        <div class="gestational-age-input">
-                            <!-- Removed ID, added class -->
-                            <input type="number" class="ga-weeks" min="14" max="42" placeholder="Weeks">
+            <!-- Twins Container (Direct Child) -->
+            <div class="twins-container">
+
+                <!-- Twin 1 -->
+                <div class="twin-card" data-twin="1">
+                    <div class="input-group twin-label">
+                        <span class="twin-dot twin1-dot"></span>
+                        <label>Twin 1</label>
+                    </div>
+                    <div class="input-group compact-input">
+                        <label>EFW (g)</label>
+                        <div class="input-result-group">
+                            <input type="number" class="efw" data-twin="1" placeholder="Est. fetal weight">
+                            <input type="text" class="result efw-result" readonly placeholder="Percentile">
                         </div>
-
-                        <span class="plus-sign">+</span>
-
-                        <div class="gestational-age-input">
-                            <!-- Removed ID, added class -->
-                            <input type="number" class="ga-days" min="0" max="6" placeholder="Days">
+                    </div>
+                    <div class="input-group compact-input">
+                        <label>AC (mm)</label>
+                        <div class="input-result-group">
+                            <input type="number" class="ac" data-twin="1" placeholder="Abd. circumference">
+                            <input type="text" class="result ac-result" readonly placeholder="Percentile">
                         </div>
                     </div>
                 </div>
 
-                <!-- Twins Container -->
-                <div class="twins-container">
-
-                    <!-- Twin 1 -->
-                    <div class="twin-card" data-twin="1">
-                        <div class="input-group twin-label">
-                            <span class="twin-dot twin1-dot"></span>
-                            <label>Twin 1</label>
-                        </div>
-
-                        <div class="input-group">
-                            <label>EFW (g)</label>
-                            <div class="input-result-group">
-                                <input type="number" class="efw" data-twin="1" placeholder="Est. fetal weight">
-                                <input type="text" class="result efw-result" readonly placeholder="Percentile">
-                            </div>
-                        </div>
-
-                        <div class="input-group">
-                            <label>AC (mm)</label>
-                            <div class="input-result-group">
-                                <input type="number" class="ac" data-twin="1" placeholder="Abd. circumference">
-                                <input type="text" class="result ac-result" readonly placeholder="Percentile">
-                            </div>
+                <!-- Twin 2 -->
+                <div class="twin-card" data-twin="2">
+                    <div class="input-group twin-label">
+                        <span class="twin-dot twin2-dot"></span>
+                        <label>Twin 2</label>
+                    </div>
+                    <div class="input-group compact-input">
+                        <label>EFW (g)</label>
+                        <div class="input-result-group">
+                            <input type="number" class="efw" data-twin="2" placeholder="Est. fetal weight">
+                            <input type="text" class="result efw-result" readonly placeholder="Percentile">
                         </div>
                     </div>
-
-                    <!-- Twin 2 -->
-                    <div class="twin-card" data-twin="2">
-                        <div class="input-group twin-label">
-                            <span class="twin-dot twin2-dot"></span>
-                            <label>Twin 2</label>
-                        </div>
-
-                        <div class="input-group">
-                            <label>EFW (g)</label>
-                            <div class="input-result-group">
-                                <input type="number" class="efw" data-twin="2" placeholder="Est. fetal weight">
-                                <input type="text" class="result efw-result" readonly placeholder="Percentile">
-                            </div>
-                        </div>
-
-                        <div class="input-group">
-                            <label>AC (mm)</label>
-                            <div class="input-result-group">
-                                <input type="number" class="ac" data-twin="2" placeholder="Abd. circumference">
-                                <input type="text" class="result ac-result" readonly placeholder="Percentile">
-                            </div>
+                    <div class="input-group compact-input">
+                        <label>AC (mm)</label>
+                        <div class="input-result-group">
+                            <input type="number" class="ac" data-twin="2" placeholder="Abd. circumference">
+                            <input type="text" class="result ac-result" readonly placeholder="Percentile">
                         </div>
                     </div>
+                </div>
 
-                </div> 
-            </div>
+            </div> 
 
-            <!-- Discordancy output -->
+            <!-- Discordancy output (Direct Child - No Gap) -->
             <div class="discordancy-container">
                 <label>Discordancy:</label>
                 <div class="discordancy-result-group">
-                    <!-- Removed ID, added class -->
                     <input type="text" class="discordancy-value" readonly placeholder="">
                 </div>
             </div>
