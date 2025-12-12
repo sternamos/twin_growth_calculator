@@ -24,89 +24,19 @@
     <main>
         <form id="twinForm" onsubmit="event.preventDefault();">
 
-            <div class="input-row unified-input-container">
+            <!-- Container for dynamic measurement blocks -->
+            <div id="measurementsList">
+                <!-- Blocks will be injected here via JavaScript -->
+            </div>
 
-                <!-- Shared Gestational Age -->
-                <div class="input-group">
-                    <label>Gestational Age</label>
-                    <div class="gestational-age-group">
-                        <div class="gestational-age-input">
-                            <input type="number" id="gestationalAgeWeeks" min="14" max="42" placeholder="Weeks">
-                        </div>
-
-                        <span class="plus-sign">+</span>
-
-                        <div class="gestational-age-input">
-                            <input type="number" id="gestationalAgeDays" min="0" max="6" placeholder="Days">
-                        </div>
-                    </div>
-                </div>
-
-                <!-- Twins Container -->
-                <div id="twinsContainer">
-
-                    <!-- Twin 1 -->
-                    <div class="twin-card" data-twin="1">
-                        <div class="input-group twin-label">
-                            <span class="twin-dot twin1-dot"></span>
-                            <label>Twin 1</label>
-                        </div>
-
-                        <div class="input-group">
-                            <label>EFW (g)</label>
-                            <div class="input-result-group">
-                                <input type="number" class="efw" data-twin="1" placeholder="Estimated fetal weight">
-                                <input type="text" class="result efw-result" readonly placeholder="Percentile">
-                            </div>
-                        </div>
-
-                        <div class="input-group">
-                            <label>AC (mm)</label>
-                            <div class="input-result-group">
-                                <input type="number" class="ac" data-twin="1" placeholder="Abdominal circumference">
-                                <input type="text" class="result ac-result" readonly placeholder="Percentile">
-                            </div>
-                        </div>
-                    </div>
-
-                    <!-- Twin 2 -->
-                    <div class="twin-card" data-twin="2">
-                        <div class="input-group twin-label">
-                            <span class="twin-dot twin2-dot"></span>
-                            <label>Twin 2</label>
-                        </div>
-
-                        <div class="input-group">
-                            <label>EFW (g)</label>
-                            <div class="input-result-group">
-                                <input type="number" class="efw" data-twin="2" placeholder="Estimated fetal weight">
-                                <input type="text" class="result efw-result" readonly placeholder="Percentile">
-                            </div>
-                        </div>
-
-                        <div class="input-group">
-                            <label>AC (mm)</label>
-                            <div class="input-result-group">
-                                <input type="number" class="ac" data-twin="2" placeholder="Abdominal circumference">
-                                <input type="text" class="result ac-result" readonly placeholder="Percentile">
-                            </div>
-                        </div>
-                    </div>
-
-                </div> 
-
+            <!-- Controls to Add new timeline points -->
+            <div class="controls-container">
+                <button type="button" id="addMeasurementBtn" class="btn-add">
+                    + Add Measurement Point
+                </button>
             </div>
 
         </form>
-
-
-        <!-- Discordancy output -->
-        <div id="discordancyContainer">
-            <label for="discordancyValue">Discordancy:</label>
-            <div class="discordancy-result-group">
-                <input type="text" id="discordancyValue" class="discordancy-value" readonly placeholder="">
-            </div>
-        </div>
 
         <!-- Graph -->
         <section id="chartSection">
@@ -131,6 +61,7 @@
         <section id="references">
             <h3>References</h3>
             <ol>
+                <!-- Add references here -->
             </ol>
         </section>
     </main>
@@ -138,6 +69,99 @@
     <footer id="footer">
         <div id="attribution">ISMFM Twin Growth Curves</div>
     </footer>
+
+    <!-- TEMPLATE: This is cloned to create new input blocks -->
+    <template id="measurementBlockTemplate">
+        <div class="measurement-block unified-input-container">
+            
+            <div class="block-header">
+                <h3>Measurement Point</h3>
+                <button type="button" class="btn-remove" title="Remove this measurement">&times;</button>
+            </div>
+
+            <!-- Shared Gestational Age -->
+            <div class="input-row">
+                <div class="input-group">
+                    <label>Gestational Age</label>
+                    <div class="gestational-age-group">
+                        <div class="gestational-age-input">
+                            <!-- Removed ID, added class -->
+                            <input type="number" class="ga-weeks" min="14" max="42" placeholder="Weeks">
+                        </div>
+
+                        <span class="plus-sign">+</span>
+
+                        <div class="gestational-age-input">
+                            <!-- Removed ID, added class -->
+                            <input type="number" class="ga-days" min="0" max="6" placeholder="Days">
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Twins Container -->
+                <div class="twins-container">
+
+                    <!-- Twin 1 -->
+                    <div class="twin-card" data-twin="1">
+                        <div class="input-group twin-label">
+                            <span class="twin-dot twin1-dot"></span>
+                            <label>Twin 1</label>
+                        </div>
+
+                        <div class="input-group">
+                            <label>EFW (g)</label>
+                            <div class="input-result-group">
+                                <input type="number" class="efw" data-twin="1" placeholder="Est. fetal weight">
+                                <input type="text" class="result efw-result" readonly placeholder="Percentile">
+                            </div>
+                        </div>
+
+                        <div class="input-group">
+                            <label>AC (mm)</label>
+                            <div class="input-result-group">
+                                <input type="number" class="ac" data-twin="1" placeholder="Abd. circumference">
+                                <input type="text" class="result ac-result" readonly placeholder="Percentile">
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Twin 2 -->
+                    <div class="twin-card" data-twin="2">
+                        <div class="input-group twin-label">
+                            <span class="twin-dot twin2-dot"></span>
+                            <label>Twin 2</label>
+                        </div>
+
+                        <div class="input-group">
+                            <label>EFW (g)</label>
+                            <div class="input-result-group">
+                                <input type="number" class="efw" data-twin="2" placeholder="Est. fetal weight">
+                                <input type="text" class="result efw-result" readonly placeholder="Percentile">
+                            </div>
+                        </div>
+
+                        <div class="input-group">
+                            <label>AC (mm)</label>
+                            <div class="input-result-group">
+                                <input type="number" class="ac" data-twin="2" placeholder="Abd. circumference">
+                                <input type="text" class="result ac-result" readonly placeholder="Percentile">
+                            </div>
+                        </div>
+                    </div>
+
+                </div> 
+            </div>
+
+            <!-- Discordancy output -->
+            <div class="discordancy-container">
+                <label>Discordancy:</label>
+                <div class="discordancy-result-group">
+                    <!-- Removed ID, added class -->
+                    <input type="text" class="discordancy-value" readonly placeholder="">
+                </div>
+            </div>
+        </div>
+    </template>
 
     <script src="script.js"></script>
 </body>
