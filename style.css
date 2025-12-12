@@ -156,6 +156,11 @@ main {
     border: 1px solid #e0e0e0;
 }
 
+/* Make sure the last input in the card doesn't push down */
+.twin-card > :last-child {
+    margin-bottom: 0;
+}
+
 .twin-label {
     display: flex;
     align-items: center;
@@ -277,7 +282,38 @@ footer {
     color: #444;
 }
 
-@media (max-width: 600px) {
-    .twins-container { flex-direction: column; }
-    .chart-container { height: 300px; }
+/* ----------------------------------
+   RESPONSIVE (Merged & Fixed)
+---------------------------------- */
+@media (max-width: 700px) {
+    main {
+        padding: 1rem;
+    }
+
+    header {
+        flex-direction: column;
+        gap: 0.5rem;
+    }
+
+    .org-logo {
+        height: 45px;
+    }
+
+    header h1 {
+        font-size: 1.3rem;
+    }
+
+    .twins-container {
+        flex-direction: column;
+    }
+
+    /* THE FIX: Reset flex basis to auto so cards don't force height */
+    .twin-card {
+        flex: 1 1 auto;
+    }
+
+    .chart-container {
+        height: 330px;
+    }
+
 }
