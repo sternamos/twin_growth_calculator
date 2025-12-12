@@ -247,7 +247,7 @@ input[type="text"] {
 }
 
 .discordancy-result-group {
-    width: 140px; /* Slightly wider to show the result clearly */
+    width: 65px; /* Slightly wider to show the result clearly */
 }
 
 .discordancy-value {
